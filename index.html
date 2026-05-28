@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis Estratégico 2026: Globant & El Ecosistema de IA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Chosen Palette: Warm Neutrals with Corporate Slate and AI Emerald Accents (bg-stone-50, text-slate-800, emerald-600/700 for highlights) -->
+    
+    <!-- Application Structure Plan: 
+         The SPA is structured as an interactive Executive Dashboard. 
+         1. Hero/Context: Sets the stage for 2026 (AI as infrastructure).
+         2. Market Categorization: Interactive tier cards to explore competitor profiles without overwhelming text.
+         3. Competitive Factors: A radar chart comparing business models (Globant vs Tier 1 vs Tier 2) for immediate visual benchmarking.
+         4. Technological Strategy: A tabbed interface allowing deep dives into Studios, Physical AI, and Digital Twins.
+         5. Differentiators: A side-by-side comparative UI highlighting AI Pods vs. Traditional Consulting.
+         This structure is chosen to guide the user from macroscopic market views down to specific operational differentiators logically. -->
+    
+    <!-- Visualization & Content Choices:
+         - Competitor Tiers -> Goal: Organize & Inform -> Interactive Cards -> Justification: Breaks down dense text into clickable, digestible chunks.
+         - Competitive Factors -> Goal: Compare -> Radar Chart (Chart.js) -> Justification: Best for multivariate comparison across different company archetypes. No SVG used.
+         - Tech Strategy -> Goal: Organize -> Tabbed Content -> Justification: Allows user to explore distinct tech pillars without scrolling fatigue.
+         - AI Pods -> Goal: Compare -> Side-by-side flex layout -> Justification: Highlights the stark contrast between legacy and modern delivery models. -->
+         
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        /* Typography & Custom Utilities */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #FAFAFA; }
+        
+        /* Chart Container Strict Constraints */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (max-width: 768px) {
+            .chart-container { height: 300px; }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f5f5f4; }
+        ::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a8a29e; }
+
+        /* UI Animations */
+        .fade-in { animation: fadeIn 0.4s ease-in-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tab-active { border-bottom: 3px solid #059669; color: #065f46; font-weight: 600; }
+        .tab-inactive { color: #78716c; border-bottom: 3px solid transparent; }
+        .tab-inactive:hover { color: #292524; border-bottom: 3px solid #d6d3d1; }
+    </style>
+</head>
+<body class="text-slate-800 antialiased selection:bg-emerald-200 selection:text-emerald-900">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-stone-50/90 backdrop-blur border-b border-stone-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center space-x-2">
+                    <span class="text-2xl text-emerald-600 font-bold">&#10022;</span>
+                    <span class="font-bold text-xl tracking-tight text-slate-900">StratTech <span class="font-light text-stone-500">2026</span></span>
+                </div>
+                <div class="hidden md:flex space-x-6 text-sm font-medium">
+                    <a href="#competidores" class="text-stone-600 hover:text-emerald-600 transition">Categorización</a>
+                    <a href="#factores" class="text-stone-600 hover:text-emerald-600 transition">Factores Competitivos</a>
+                    <a href="#estrategia" class="text-stone-600 hover:text-emerald-600 transition">Estrategia Tech</a>
+                    <a href="#diferenciadores" class="text-stone-600 hover:text-emerald-600 transition">Diferenciadores (AI Pods)</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+        <div class="text-center max-w-3xl mx-auto">
+            <div class="inline-block px-3 py-1 mb-4 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider">
+                Reporte Estratégico Ejecutivo
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-6 leading-tight">
+                Análisis Competitivo de Globant en la Era de la <span class="text-emerald-600">Infraestructura de IA</span>
+            </h1>
+            <p class="text-lg text-stone-600 leading-relaxed">
+                Hacia 2026, la Inteligencia Artificial ha superado la fase de experimentación para convertirse en la infraestructura base de los negocios. Este reporte interactivo desglosa cómo Globant compite, se diferencia y lidera frente a gigantes y especialistas digitales.
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 space-y-24">
+
+        <!-- 1. Categorización de Competidores -->
+        <section id="competidores" class="scroll-mt-24">
+            <div class="mb-10">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">1. El Ecosistema Competitivo (2026)</h2>
+                <p class="text-stone-600 max-w-4xl">
+                    Para entender la posición de Globant, dividimos el mercado en tres niveles estructurales. Haz clic en cada Tier para descubrir cómo operan, quiénes son y cuál es la postura de Globant frente a ellos.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Tier 1 -->
+                <button onclick="showTier('tier1')" class="text-left bg-white p-6 rounded-xl border border-stone-200 shadow-sm hover:shadow-md hover:border-emerald-300 transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <div class="text-3xl mb-4">&#127970;</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Tier 1: Los Gigantes</h3>
+                    <p class="text-sm text-stone-500 font-medium mb-4">Accenture, TCS, Infosys, Capgemini</p>
+                    <p class="text-sm text-emerald-600 font-semibold">Ver análisis &#8594;</p>
+                </button>
+
+                <!-- Tier 2 -->
+                <button onclick="showTier('tier2')" class="text-left bg-white p-6 rounded-xl border border-stone-200 shadow-sm hover:shadow-md hover:border-emerald-300 transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <div class="text-3xl mb-4">&#9889;</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Tier 2: Especialistas Digitales</h3>
+                    <p class="text-sm text-stone-500 font-medium mb-4">EPAM, Thoughtworks, Endava</p>
+                    <p class="text-sm text-emerald-600 font-semibold">Ver análisis &#8594;</p>
+                </button>
+
+                <!-- Tier 3 -->
+                <button onclick="showTier('tier3')" class="text-left bg-white p-6 rounded-xl border border-stone-200 shadow-sm hover:shadow-md hover:border-emerald-300 transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <div class="text-3xl mb-4">&#127919;</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Tier 3: Boutiques Regionales</h3>
+                    <p class="text-sm text-stone-500 font-medium mb-4">Neoris, CI&T, Agencias de Nicho</p>
+                    <p class="text-sm text-emerald-600 font-semibold">Ver análisis &#8594;</p>
+                </button>
+            </div>
+
+            <!-- Detail Display Area -->
+            <div id="tier-details" class="mt-8 bg-slate-900 text-stone-100 rounded-xl p-8 hidden fade-in">
+                <div class="flex flex-col md:flex-row gap-8">
+                    <div class="md:w-1/3">
+                        <h4 id="tier-title" class="text-2xl font-bold text-emerald-400 mb-2"></h4>
+                        <p id="tier-players" class="text-sm text-stone-400 mb-6"></p>
+                        <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+                            <h5 class="text-xs uppercase text-slate-400 font-bold tracking-wider mb-2">Vulnerabilidad Principal</h5>
+                            <p id="tier-vuln" class="text-sm"></p>
+                        </div>
+                    </div>
+                    <div class="md:w-2/3 space-y-4">
+                        <div>
+                            <h5 class="text-emerald-300 font-semibold mb-1">Modelo de Negocio</h5>
+                            <p id="tier-model" class="text-sm text-stone-300 leading-relaxed"></p>
+                        </div>
+                        <div>
+                            <h5 class="text-emerald-300 font-semibold mb-1">La Estrategia de Globant vs Este Tier</h5>
+                            <p id="tier-strategy" class="text-sm text-stone-300 leading-relaxed"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Factores Competitivos -->
+        <section id="factores" class="scroll-mt-24 pt-12 border-t border-stone-200">
+            <div class="mb-10">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">2. Dinámica de los Factores Competitivos</h2>
+                <p class="text-stone-600 max-w-4xl">
+                    ¿Por qué ganan los contratos? Esta visualización compara el perfil competitivo de Globant contra el promedio del Tier 1 (Gigantes) y Tier 2 (Especialistas). Globant se posiciona en el punto óptimo entre la escala masiva y la agilidad de diseño nativo.
+                </p>
+            </div>
+
+            <div class="bg-white p-6 md:p-10 rounded-2xl border border-stone-200 shadow-sm flex flex-col md:flex-row items-center gap-10">
+                <div class="w-full md:w-1/2">
+                    <div class="chart-container">
+                        <canvas id="competitorRadarChart"></canvas>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/2 space-y-6">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 mt-1 mr-4 text-2xl">&#127758;</div>
+                        <div>
+                            <h4 class="font-bold text-slate-900">Talento: LatAm vs. India</h4>
+                            <p class="text-sm text-stone-600 mt-1">Mientras el Tier 1 confía en el arbitraje de costos masivo en India, Globant domina el talento Nearshore en LatAm. Esto permite alineación de zona horaria con EE.UU. y una afinidad cultural crucial para el trabajo ágil y de diseño, compensando el diferencial de precios.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 mt-1 mr-4 text-2xl">&#128184;</div>
+                        <div>
+                            <h4 class="font-bold text-slate-900">Transición de Precios (Value-based)</h4>
+                            <p class="text-sm text-stone-600 mt-1">El modelo clásico de "horas facturadas" está muriendo por la IA. Globant compite ofreciendo modelos basados en resultados (Outcome-based), donde la eficiencia generada por sus herramientas internas (MagnifAI, Navigate) se traslada como valor al cliente, no solo como horas de desarrollo.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 mt-1 mr-4 text-2xl">&#129465;</div>
+                        <div>
+                            <h4 class="font-bold text-slate-900">Escala Global vs. Agilidad</h4>
+                            <p class="text-sm text-stone-600 mt-1">Globant ha escalado masivamente sin perder el formato de "Studios", lo que le permite retener la velocidad de una boutique. El Tier 1 lucha contra la burocracia, mientras que el Tier 3 carece del alcance para transformaciones empresariales de 360 grados.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Estrategia Tecnológica -->
+        <section id="estrategia" class="scroll-mt-24 pt-12 border-t border-stone-200">
+            <div class="mb-10">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">3. Estrategia Tecnológica (Visión 2026)</h2>
+                <p class="text-stone-600 max-w-4xl">
+                    Globant ha dejado atrás la era de la "experimentación con IA" para proveerla como infraestructura pura. Explora las tres verticales principales de su estrategia tecnológica para el 2026.
+                </p>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden">
+                <!-- Tabs Header -->
+                <div class="flex border-b border-stone-200 overflow-x-auto">
+                    <button onclick="switchTab('tab-studios')" id="btn-tab-studios" class="px-6 py-4 text-sm whitespace-nowrap tab-active">
+                        Evolución del Modelo 'Studios'
+                    </button>
+                    <button onclick="switchTab('tab-physical')" id="btn-tab-physical" class="px-6 py-4 text-sm whitespace-nowrap tab-inactive">
+                        Physical AI (IA Física)
+                    </button>
+                    <button onclick="switchTab('tab-twins')" id="btn-tab-twins" class="px-6 py-4 text-sm whitespace-nowrap tab-inactive">
+                        Digital Twins & Simulación
+                    </button>
+                </div>
+                
+                <!-- Tabs Content -->
+                <div class="p-6 md:p-10">
+                    <!-- Content: Studios -->
+                    <div id="tab-studios" class="tab-content fade-in">
+                        <div class="flex flex-col md:flex-row gap-8 items-center">
+                            <div class="md:w-1/2">
+                                <h3 class="text-2xl font-bold text-slate-900 mb-3">Hiper-Especialización Cruzada</h3>
+                                <p class="text-stone-600 mb-4">
+                                    En sus inicios, los Studios de Globant eran silos de especialización (Ej: Gaming Studio, UI Studio). En 2026, la estrategia exige que el <strong>AI Studio</strong> cruce transversalmente todos los demás. 
+                                </p>
+                                <ul class="space-y-3 text-sm text-stone-600">
+                                    <li class="flex items-center"><span class="text-emerald-500 mr-2">&#10003;</span> Ya no se vende "Desarrollo Móvil", se vende "Desarrollo Móvil Cognitivo".</li>
+                                    <li class="flex items-center"><span class="text-emerald-500 mr-2">&#10003;</span> Redes neuronales de expertos (Studios interactuando dinámicamente).</li>
+                                    <li class="flex items-center"><span class="text-emerald-500 mr-2">&#10003;</span> Creación de Studios específicos para industrias hiper-reguladas con IA (Ej: MedTech AI Studio).</li>
+                                </ul>
+                            </div>
+                            <div class="md:w-1/2 bg-stone-100 p-6 rounded-xl flex justify-center items-center h-64 border border-stone-200">
+                                <!-- Abstract Representation via CSS/HTML -->
+                                <div class="relative w-full h-full flex items-center justify-center">
+                                    <div class="absolute w-24 h-24 bg-emerald-500/20 rounded-full flex items-center justify-center font-bold text-emerald-800 z-10 border-2 border-emerald-400">AI Studio</div>
+                                    <div class="absolute top-4 left-4 w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center text-xs text-blue-800 font-semibold">Gaming</div>
+                                    <div class="absolute top-4 right-4 w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center text-xs text-purple-800 font-semibold">Finance</div>
+                                    <div class="absolute bottom-4 left-1/4 w-16 h-16 bg-orange-500/20 rounded-full flex items-center justify-center text-xs text-orange-800 font-semibold">Retail</div>
+                                    <!-- Connectors -->
+                                    <div class="absolute w-full h-1 bg-stone-300 top-1/2 transform -translate-y-1/2 -z-10"></div>
+                                    <div class="absolute h-full w-1 bg-stone-300 left-1/2 transform -translate-x-1/2 -z-10"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Content: Physical AI -->
+                    <div id="tab-physical" class="tab-content hidden fade-in">
+                        <div class="flex flex-col md:flex-row-reverse gap-8 items-center">
+                            <div class="md:w-1/2">
+                                <h3 class="text-2xl font-bold text-slate-900 mb-3">El Salto al Mundo Físico</h3>
+                                <p class="text-stone-600 mb-4">
+                                    La estrategia de Globant comprende que el software ya no habita solo en pantallas. La <strong>Physical AI</strong> (IA Integrada en hardware, robótica y sensores Edge) es el nuevo campo de batalla.
+                                </p>
+                                <p class="text-sm text-stone-600 mb-4">
+                                    Globant está ayudando a empresas manufactureras, logísticas y de retail a integrar LLMs (Modelos de Lenguaje Grandes) y VLM (Modelos de Visión) directamente en cámaras, robots de almacén y dispositivos IoT para toma de decisiones autónomas en tiempo real.
+                                </p>
+                                <div class="bg-emerald-50 border-l-4 border-emerald-500 p-4 text-sm text-emerald-800">
+                                    <strong>Caso de Uso 2026:</strong> Implementación de agentes visuales en fábricas que detectan defectos de ensamblaje en milisegundos e instruyen verbalmente a los operadores sobre cómo corregirlos.
+                                </div>
+                            </div>
+                            <div class="md:w-1/2 flex justify-center">
+                                <div class="grid grid-cols-2 gap-4 text-center">
+                                    <div class="bg-stone-100 p-6 rounded-xl border border-stone-200">
+                                        <div class="text-4xl mb-2">&#129302;</div>
+                                        <div class="font-bold text-sm text-slate-700">Edge Robotics</div>
+                                    </div>
+                                    <div class="bg-stone-100 p-6 rounded-xl border border-stone-200">
+                                        <div class="text-4xl mb-2">&#128246;</div>
+                                        <div class="font-bold text-sm text-slate-700">IoT Cognitivo</div>
+                                    </div>
+                                    <div class="bg-stone-100 p-6 rounded-xl border border-stone-200">
+                                        <div class="text-4xl mb-2">&#128065;</div>
+                                        <div class="font-bold text-sm text-slate-700">Computer Vision</div>
+                                    </div>
+                                    <div class="bg-emerald-600 p-6 rounded-xl border border-emerald-700 shadow-md">
+                                        <div class="text-4xl mb-2">&#9881;</div>
+                                        <div class="font-bold text-sm text-white">Integración Total</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Content: Digital Twins -->
+                    <div id="tab-twins" class="tab-content hidden fade-in">
+                        <div class="flex flex-col md:flex-row gap-8 items-center">
+                            <div class="md:w-1/2">
+                                <h3 class="text-2xl font-bold text-slate-900 mb-3">Gemelos Digitales (Digital Twins)</h3>
+                                <p class="text-stone-600 mb-4">
+                                    De simular máquinas a simular organizaciones enteras. Globant utiliza Digital Twins apoyados en IA no solo para replicar un motor de avión, sino para replicar cadenas de suministro complejas y comportamientos de experiencia del empleado (EX) o del cliente (CX).
+                                </p>
+                                <ul class="space-y-4">
+                                    <li>
+                                        <h5 class="text-sm font-bold text-slate-800">1. Simulación Organizacional</h5>
+                                        <p class="text-xs text-stone-500">Predicción de cuellos de botella en flujos de trabajo antes de implementar nuevo software.</p>
+                                    </li>
+                                    <li>
+                                        <h5 class="text-sm font-bold text-slate-800">2. Espacialidad Computacional</h5>
+                                        <p class="text-xs text-stone-500">Integración de realidad mixta (AR/VR) con datos en tiempo real de gemelos digitales para mantenimiento remoto.</p>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="md:w-1/2 w-full bg-slate-900 p-6 rounded-xl text-center relative overflow-hidden h-64 border border-slate-800 flex flex-col justify-center items-center">
+                                <div class="text-5xl text-emerald-400 mb-4">&#128221; &#8596; &#127981;</div>
+                                <h4 class="text-white font-bold mb-2">Simulación en Tiempo Real</h4>
+                                <div class="w-full bg-slate-800 rounded-full h-2 mb-2 mt-4 max-w-xs mx-auto">
+                                  <div class="bg-emerald-500 h-2 rounded-full w-3/4 animate-pulse"></div>
+                                </div>
+                                <p class="text-xs text-slate-400">Sincronización de Datos Físico-Digital</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Diferenciadores -->
+        <section id="diferenciadores" class="scroll-mt-24 pt-12 border-t border-stone-200">
+            <div class="mb-10 text-center">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">4. El Diferenciador Definitivo: AI Pods</h2>
+                <p class="text-stone-600 max-w-3xl mx-auto">
+                    ¿Cómo se distingue de la consultoría tradicional del Tier 1? En 2026, la entrega de valor no depende del número de personas en un proyecto, sino de la autonomía algorítmica del equipo.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Traditional Consulting -->
+                <div class="bg-stone-100 p-8 rounded-2xl border border-stone-200 opacity-80 hover:opacity-100 transition-opacity">
+                    <div class="flex items-center justify-between mb-6 border-b border-stone-300 pb-4">
+                        <h3 class="text-xl font-bold text-slate-500">Consultoría Tradicional (Legacy)</h3>
+                        <div class="text-2xl text-stone-400">&#128104;&#8205;&#128188;</div>
+                    </div>
+                    <ul class="space-y-6">
+                        <li>
+                            <h4 class="font-bold text-slate-700 text-sm uppercase tracking-wider mb-1">Estructura</h4>
+                            <p class="text-sm text-stone-600">Pirámide humana. Muchos desarrolladores junior en offshore supervisados por managers.</p>
+                        </li>
+                        <li>
+                            <h4 class="font-bold text-slate-700 text-sm uppercase tracking-wider mb-1">Facturación</h4>
+                            <p class="text-sm text-stone-600">Basada en Tiempo y Materiales (Horas-Hombre). Incentiva proyectos largos.</p>
+                        </li>
+                        <li>
+                            <h4 class="font-bold text-slate-700 text-sm uppercase tracking-wider mb-1">Rol de la IA</h4>
+                            <p class="text-sm text-stone-600">Copilotos individuales aislados. Aumento marginal de productividad.</p>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Globant AI Pods -->
+                <div class="bg-slate-900 p-8 rounded-2xl border-2 border-emerald-500 shadow-xl relative transform lg:-translate-y-4">
+                    <div class="absolute -top-4 -right-4 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                        El Modelo Globant 2026
+                    </div>
+                    <div class="flex items-center justify-between mb-6 border-b border-slate-700 pb-4">
+                        <h3 class="text-xl font-bold text-white">AI Pods Autónomos</h3>
+                        <div class="text-2xl text-emerald-400">&#129488;</div>
+                    </div>
+                    <ul class="space-y-6">
+                        <li>
+                            <h4 class="font-bold text-emerald-400 text-sm uppercase tracking-wider mb-1">Estructura</h4>
+                            <p class="text-sm text-stone-300">Equipos pequeños e hiper-senior (Pods). Un humano orquesta múltiples agentes de IA (Arquitectura, Testing, Código).</p>
+                        </li>
+                        <li>
+                            <h4 class="font-bold text-emerald-400 text-sm uppercase tracking-wider mb-1">Facturación</h4>
+                            <p class="text-sm text-stone-300">Basada en valor y velocidad (Outcome-based). Incentiva la resolución rápida gracias a la automatización.</p>
+                        </li>
+                        <li>
+                            <h4 class="font-bold text-emerald-400 text-sm uppercase tracking-wider mb-1">Rol de la IA</h4>
+                            <p class="text-sm text-stone-300">Infraestructural. Uso de herramientas propietarias (Navigate) para descubrir cuellos de botella e IA multicanal (MagnifAI) para QA automatizado.</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 text-stone-400 py-8 border-t border-slate-800 text-center text-sm">
+        <div class="max-w-7xl mx-auto px-4">
+            <p>Generado interactivamente - Reporte de Inteligencia Competitiva y Arquitectura de Sistemas 2026</p>
+        </div>
+    </footer>
+
+    <!-- Logic and Interactions -->
+    <script>
+        // --- 1. Competitor Categorization Logic ---
+        const competitorData = {
+            tier1: {
+                title: "Tier 1: Los Gigantes",
+                players: "Accenture, Tata Consultancy Services (TCS), Infosys, Capgemini",
+                vuln: "Burocracia, legado de sistemas On-Premise, lenta adaptación cultural a modelos de software puramente ágiles.",
+                model: "Escala masiva basada principalmente en talento en India. Históricamente enfocados en ERP, mantenimiento de sistemas y BPO. Su tamaño les da acceso a los contratos de transformación más grandes del Fortune 500.",
+                strategy: "Globant compite aquí destacando su agilidad, cultura 'digitally native' (sin legacy) y su enfoque en innovación frente a la estandarización. Cuando un cliente quiere 'mantenimiento', va al Tier 1; cuando quiere 'crear el producto del futuro', Globant se posiciona como la opción ideal."
+            },
+            tier2: {
+                title: "Tier 2: Especialistas Digitales",
+                players: "EPAM Systems, Thoughtworks, Endava",
+                vuln: "Dependencia histórica del talento en Europa del Este (afectado por geopolítica), presión intensa en márgenes por la competencia de Globant.",
+                model: "Ingeniería pura y consultoría ágil. No hacen mantenimiento heredado. Son los competidores más directos de Globant en filosofía y tipo de servicios tecnológicos avanzados.",
+                strategy: "Frente a ellos, la estrategia de Globant en 2026 se apoya en su dominio de la región LatAm (cultura vibrante, misma zona horaria que EE.UU.) y su rápida transición para paquetizar la IA como plataforma a través de su división Globant X, logrando mayor escalabilidad comercial."
+            },
+            tier3: {
+                title: "Tier 3: Boutiques Regionales",
+                players: "Neoris, CI&T, agencias hiper-locales",
+                vuln: "Incapacidad para proveer escala global a clientes enterprise; recursos limitados de I+D para desarrollar plataformas de IA propietarias.",
+                model: "Competencia agresiva en precios y nichos muy específicos (ej. una sola industria o tecnología particular). Modelos de staffing regional.",
+                strategy: "Globant gana contra el Tier 3 demostrando que la 'escala segura' es necesaria para implementaciones robustas de IA de grado empresarial. Globant ofrece la intimidad de una boutique gracias a sus 'Studios', pero respaldada por la fuerza laboral global."
+            }
+        };
+
+        function showTier(tierKey) {
+            const data = competitorData[tierKey];
+            document.getElementById('tier-title').innerText = data.title;
+            document.getElementById('tier-players').innerText = data.players;
+            document.getElementById('tier-vuln').innerText = data.vuln;
+            document.getElementById('tier-model').innerText = data.model;
+            document.getElementById('tier-strategy').innerText = data.strategy;
+            
+            const detailView = document.getElementById('tier-details');
+            detailView.classList.remove('hidden');
+            // Re-trigger animation
+            detailView.classList.remove('fade-in');
+            void detailView.offsetWidth; // trigger reflow
+            detailView.classList.add('fade-in');
+            
+            // Scroll to details on mobile
+            if(window.innerWidth < 768) {
+                detailView.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+            }
+        }
+
+        // --- 2. Chart.js Implementation (Radar Chart) ---
+        document.addEventListener("DOMContentLoaded", function() {
+            const ctx = document.getElementById('competitorRadarChart').getContext('2d');
+            
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            Chart.defaults.color = '#78716c'; // stone-500
+
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: [
+                        'Escala Global', 
+                        'Agilidad/Diseño', 
+                        'Especialización IA', 
+                        'Alineación Horaria (US)', 
+                        'Coste-Eficiencia (Offshore)'
+                    ],
+                    datasets: [{
+                        label: 'Globant',
+                        data: [8, 9.5, 9, 9.5, 7],
+                        fill: true,
+                        backgroundColor: 'rgba(16, 185, 129, 0.2)', // emerald
+                        borderColor: 'rgb(16, 185, 129)',
+                        pointBackgroundColor: 'rgb(16, 185, 129)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(16, 185, 129)'
+                    }, {
+                        label: 'Promedio Tier 1 (Gigantes)',
+                        data: [10, 6, 7.5, 5, 9],
+                        fill: true,
+                        backgroundColor: 'rgba(15, 23, 42, 0.2)', // slate
+                        borderColor: 'rgb(15, 23, 42)',
+                        pointBackgroundColor: 'rgb(15, 23, 42)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(15, 23, 42)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { padding: 20, usePointStyle: true }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleFont: { size: 14, weight: 'bold' },
+                            bodyFont: { size: 13 },
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    return ' ' + context.dataset.label + ': ' + context.raw + '/10';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(0, 0, 0, 0.1)' },
+                            grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                            pointLabels: {
+                                font: { size: 12, weight: '600' },
+                                color: '#44403c' // stone-700
+                            },
+                            ticks: {
+                                display: false, // hide numbers on the grid
+                                min: 0,
+                                max: 10,
+                                stepSize: 2
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        // --- 3. Tabs Logic for Tech Strategy ---
+        function switchTab(tabId) {
+            // Hide all tabs
+            const tabs = ['tab-studios', 'tab-physical', 'tab-twins'];
+            tabs.forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            
+            // Reset all buttons
+            const btns = ['btn-tab-studios', 'btn-tab-physical', 'btn-tab-twins'];
+            btns.forEach(id => {
+                const btn = document.getElementById(id);
+                btn.classList.remove('tab-active');
+                btn.classList.add('tab-inactive');
+            });
+
+            // Show selected tab
+            const selectedContent = document.getElementById(tabId);
+            selectedContent.classList.remove('hidden');
+            // Trigger animation
+            selectedContent.classList.remove('fade-in');
+            void selectedContent.offsetWidth; 
+            selectedContent.classList.add('fade-in');
+
+            // Style selected button
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('tab-inactive');
+            activeBtn.classList.add('tab-active');
+        }
+    </script>
+</body>
+</html>
